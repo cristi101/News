@@ -19,8 +19,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -153,10 +151,10 @@ public final class QueryUtils {
                 News art = new News();
 
                 art.setPicture(thumbnail);
-                art.setTitle(title);
-                art.setSection(section);
+                art.setTitle(title.trim());
+                art.setSection(section.trim());
                 art.setDate(date);
-                art.setAuthor(authors);
+                art.setAuthor(authors.trim());
                 art.setSource(url);
 
                 result.news.add(art);
