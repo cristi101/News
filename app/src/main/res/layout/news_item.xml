@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/list_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/margin"
+    android:background="@color/item_bkgd"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/section"
+        style="@style/section"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:gravity="right"
+        tools:text="Sport" />
+
+    <LinearLayout
+        android:background="@color/title_bkgd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/picture"
+            style="@style/picture"
+            android:layout_weight="0"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/picture_height"
+            android:layout_gravity="bottom"
+            android:contentDescription="@string/picture_desc"
+            android:src="@mipmap/ic_launcher" />
+
+        <TextView
+            android:id="@+id/title"
+            style="@style/title"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:gravity="bottom|left"
+            tools:text="This is the most important news" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:background="@color/info_bkgd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/author"
+            style="@style/author"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="fill"
+            android:gravity="left"
+            tools:text="John Doe" />
+
+        <TextView
+            android:id="@+id/date"
+            style="@style/date"
+            android:layout_weight="0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="fill_horizontal"
+            android:gravity="center"
+            tools:text="4/07/2018 11:11" />
+
+
+    </LinearLayout>
+</LinearLayout>
