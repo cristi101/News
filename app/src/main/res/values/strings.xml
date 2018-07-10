@@ -1,12 +1,13 @@
 <resources>
     <string name="app_name">News</string>
-    <string name ="key">yz5o\'i~.-4y;*b41%lcw0gxt|6ctm++3`$l</string>
+    <string name="key">yz5o\'i~.-4y;*b41%lcw0gxt|6ctm++3`$l</string>
 
     <!-- password dialog -->
     <string name="dialog_title">Password</string>
-    <string name="dialog_message">I ask for it only once!\nIf you enter the wrong password,\nplease reinstall the app.</string>
-    <string name="ok_label">Ok</string>
-    <string name="password_hint">Enter the password here</string>
+    <string name="dialog_message">You can change it from settings.</string>
+    <string name="ok_label">OK</string>
+    <string name="cancel_label">Cancel</string>
+
 
     <string name="picture_desc">Article picture</string>
 
@@ -16,4 +17,98 @@
     <string name="no_news">No news found!</string>
     <string name="internet_error">There is some problem with\nyour Internet connection.</string>
     <string name="try_again">Try again!</string>
+
+    <string name="settings_title">Settings</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Settings -->
+    <string name="rating_hint">Enter the rating</string>
+    <string name="ratingTitle">Rating</string>
+    <string name="ratingDefault">5</string>
+    <string name="rating">star-rating</string>
+
+    <!-- with boolean operators -->
+    <string name="booleanCategory">Boolean search</string>
+
+    <string name="topicTitle">Topic</string>
+    <string name="topic_hint">Enter the topic</string>
+    <string name="topicDefault">Queen</string>
+    <string name="topic">q</string>
+
+    <string name="officeTitle">Production offices</string>
+    <string name="office_hint">Enter the offices</string>
+    <string name="officeDefault">uk</string>
+    <string name="office">production-office</string>
+
+    <string name="lang_hint">Enter the languages</string>
+    <string name="langTitle">Content languages</string>
+    <string name="langDefault">en</string>
+    <string name="lang">lang</string>
+
+    <!-- dates -->
+    <string name="dateCategory">Date range</string>
+
+    <string name="fromTitle">From</string>
+    <string name="from_hint">Enter the start date</string>
+    <string name="fromDefault">1/1/2018</string>
+    <string name="from">from-date</string>
+
+    <string name="toTitle">To</string>
+    <string name="to_hint">Enter the end date</string>
+    <string name="toDefault">15/8/2018</string>
+    <string name="to">to-date</string>
+
+    <string name="dateTitle">Which date</string>
+    <string name="dateDefault">published</string>
+    <string name="useDate">use-date</string>
+
+    <string-array name="dateLabels">
+        <item>Published</item>
+        <item>First publication</item>
+        <item>Newspaper edition</item>
+        <item>Last modified</item>
+    </string-array>
+
+    <string-array name="date">
+        <item>published</item>
+        <item>first-publication</item>
+        <item>newspaper-edition</item>
+        <item>last-modified</item>
+    </string-array>
+
+    <!-- order -->
+    <string name="orderCategory">Sort order</string>
+
+    <string name="orderTitle">Order by</string>
+    <string name="orderDefault">newest</string>
+    <string name="orderBy">order-by</string>
+
+    <string-array name="orderLabels">
+        <item>Newest</item>
+        <item>Oldest</item>
+        <item>Relevance</item>
+    </string-array>
+
+    <string-array name="order">
+        <item>newest</item>
+        <item>oldest</item>
+        <item>relevance</item>
+    </string-array>
+
+    <string name="orderDate">order-date</string>
+
+    <!-- other -->
+    <string name="otherCategory">Other settings</string>
+
+    <string name="pageSizeTitle">Page size</string>
+    <string name="page_size_hint">Enter the page size</string>
+    <string name="pageSizeDefault">10</string>
+    <string name="pageSize">page-size</string>
+
+    <string name="passwordTitle">Password</string>
+    <string name="password_hint">Enter the password here</string>
+    <string name="passwordDefault">****</string>
+    <string name="passwordSummary">Here you can change the password to access the API key</string>
+    <string name="password">password</string>
+
 </resources>

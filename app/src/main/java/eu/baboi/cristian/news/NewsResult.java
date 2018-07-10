@@ -32,7 +32,7 @@ public class NewsResult {
         result.pageSize = 0;
         result.page = 0;
         result.pages = 0;
-        result.news = new ArrayList<News>();
+        result.news = new ArrayList<>();
         return result;
     }
     public void clear(){
@@ -44,12 +44,14 @@ public class NewsResult {
         news.clear();
     }
     public void copy(NewsResult data){
-        code = data.code;
-        count = data.count;
-        pageSize = data.pageSize;
-        page = data.page;
-        pages = data.pages;
-        news=data.news;
+        if (data != null) {
+            code = data.code;
+            count = data.count;
+            pageSize = data.pageSize;
+            page = data.page;
+            pages = data.pages;
+            news = data.news;
+        } else clear();
     }
 
     // check if we need to display the two buttons

@@ -50,7 +50,9 @@ class News {
     }
 
     public void setPicture(String url){
-        if(url==null||url.trim().length()==0) return;
+        if (url == null || url.trim().length() == 0)
+            mPictureURL = null;
+        else
         try{
             mPictureURL = new URL(url);
         } catch (MalformedURLException e) {

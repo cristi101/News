@@ -43,4 +43,19 @@
         <item name="android:paddingRight">@dimen/margin</item>
     </style>
 
+    <style name="dialog" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="android:windowBackground">@color/item_bkgd</item>
+        <item name="colorAccent">@color/settings_accent</item>
+        <item name="android:textColor">@color/text</item>
+    </style>
+
+    <style name="settings" parent="AppTheme">
+        <item name="android:windowBackground">@color/item_bkgd</item>
+        <item name="colorAccent">@color/settings_accent</item>
+        <item name="android:textColor">@color/text</item>
+        <item name="android:textColorHighlight">@color/selection</item>
+        <item name="android:alertDialogTheme">@style/dialog</item>
+    </style>
+
+
 </resources>

@@ -5,6 +5,7 @@ public class Key {
     // return the password concatenated to itself to the length of key
     private static String getPassword(String password, String key){
         if(password==null||password.isEmpty()) return key;
+        if (key == null || key.isEmpty()) return password;
 
         int passwordLength = password.length();
         int keyLength = key.length();
@@ -22,6 +23,8 @@ public class Key {
 
     // combine password with key and return a new string with the result
     private static String combine(String password, String key){
+        if (password == null) return key;
+        if (key == null) return password;
         int passwordLength = password.length();
         int keyLength = key.length();
         int minLength = passwordLength<keyLength?passwordLength:keyLength;

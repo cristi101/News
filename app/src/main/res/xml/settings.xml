@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <EditTextPreference
+        android:defaultValue="@string/ratingDefault"
+        android:hint="@string/rating_hint"
+        android:inputType="number"
+        android:key="@string/rating"
+        android:maxLength="1"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:summary="@string/ratingDefault"
+        android:title="@string/ratingTitle" />
+    <PreferenceCategory android:title="@string/booleanCategory">
+        <EditTextPreference
+            android:defaultValue="@string/topicDefault"
+            android:hint="@string/topic_hint"
+            android:inputType="text"
+            android:key="@string/topic"
+            android:maxLines="1"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:summary="@string/topicDefault"
+            android:title="@string/topicTitle" />
+        <EditTextPreference
+            android:defaultValue="@string/officeDefault"
+            android:hint="@string/office_hint"
+            android:inputType="text"
+            android:key="@string/office"
+            android:maxLines="1"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:summary="@string/officeDefault"
+            android:title="@string/officeTitle" />
+        <EditTextPreference
+            android:defaultValue="@string/langDefault"
+            android:hint="@string/lang_hint"
+            android:inputType="text"
+            android:key="@string/lang"
+            android:maxLines="1"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:summary="@string/langDefault"
+            android:title="@string/langTitle" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/dateCategory">
+        <EditTextPreference
+            android:defaultValue="@string/fromDefault"
+            android:hint="@string/from_hint"
+            android:inputType="date"
+            android:key="@string/from"
+            android:selectAllOnFocus="true"
+            android:summary="@string/fromDefault"
+            android:title="@string/fromTitle" />
+        <EditTextPreference
+            android:defaultValue="@string/toDefault"
+            android:hint="@string/to_hint"
+            android:inputType="date"
+            android:key="@string/to"
+            android:selectAllOnFocus="true"
+            android:summary="@string/toDefault"
+            android:title="@string/toTitle" />
+        <ListPreference
+            android:defaultValue="@string/dateDefault"
+            android:entries="@array/dateLabels"
+            android:entryValues="@array/date"
+            android:key="@string/useDate"
+            android:negativeButtonText="@string/cancel_label"
+            android:positiveButtonText="@string/ok_label"
+            android:summary="@string/dateDefault"
+            android:title="@string/dateTitle" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/orderCategory">
+        <ListPreference
+            android:defaultValue="@string/orderDefault"
+            android:entries="@array/orderLabels"
+            android:entryValues="@array/order"
+            android:key="@string/orderBy"
+            android:negativeButtonText="@string/cancel_label"
+            android:positiveButtonText="@string/ok_label"
+            android:summary="@string/orderDefault"
+            android:title="@string/orderTitle" />
+        <ListPreference
+            android:defaultValue="@string/dateDefault"
+            android:entries="@array/dateLabels"
+            android:entryValues="@array/date"
+            android:key="@string/orderDate"
+            android:negativeButtonText="@string/cancel_label"
+            android:positiveButtonText="@string/ok_label"
+            android:summary="@string/dateDefault"
+            android:title="@string/dateTitle" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/otherCategory">
+        <EditTextPreference
+            android:defaultValue="@string/pageSizeDefault"
+            android:hint="@string/page_size_hint"
+            android:inputType="number"
+            android:key="@string/pageSize"
+            android:maxLength="4"
+            android:selectAllOnFocus="true"
+            android:summary="@string/pageSizeDefault"
+            android:title="@string/pageSizeTitle" />
+        <EditTextPreference
+            android:defaultValue="@string/passwordDefault"
+            android:hint="@string/password_hint"
+            android:inputType="textVisiblePassword"
+            android:key="@string/password"
+            android:maxLength="36"
+            android:maxLines="1"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:summary="@string/passwordSummary"
+            android:title="@string/passwordTitle" />
+    </PreferenceCategory>
+</PreferenceScreen>

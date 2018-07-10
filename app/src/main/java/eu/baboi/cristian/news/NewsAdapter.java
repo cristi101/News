@@ -1,10 +1,7 @@
 package eu.baboi.cristian.news;
 
-import android.app.LoaderManager;
-import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.content.Intent;
-import android.content.Loader;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,18 +14,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.io.File;
-import java.net.URL;
-
 // Type Article
 class NewsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-    ImageView picture;
-    TextView title;
-    TextView section;
-    TextView date;
-    TextView author;
+    final ImageView picture;
+    final TextView title;
+    final TextView section;
+    final TextView date;
+    final TextView author;
 
-    private Context mContext;
+    final private Context mContext;
     private Uri mSource;
 
     NewsViewHolder(@NonNull View itemView, Context context) {
@@ -70,8 +64,8 @@ class NewsViewHolder extends RecyclerView.ViewHolder implements View.OnClickList
 
 //previous & next buttons
 class ButtonViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-    private MainActivity mainActivity;
-    private Button button;
+    final private MainActivity mainActivity;
+    final private Button button;
     private long page;
 
     ButtonViewHolder(@NonNull View itemView, MainActivity context) {
@@ -110,15 +104,14 @@ class EmptyViewHolder extends RecyclerView.ViewHolder  {
 
 //error button
 class ErrorViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-    private MainActivity mainActivity;
-    private Button button;
+    final private MainActivity mainActivity;
     private long page;
 
     ErrorViewHolder(@NonNull View itemView, MainActivity context) {
         super(itemView);
         page = 0;
         mainActivity = context;
-        button = itemView.findViewById(R.id.try_again);
+        Button button = itemView.findViewById(R.id.try_again);
         button.setOnClickListener(this);
     }
 
@@ -144,8 +137,8 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  
     private final static int TYPE_EMPTY = 3;
     private final static int TYPE_ERROR = 4;
 
-    private NewsResult mNewsList; // holds ALL the items to be displayed
-    private MainActivity mainActivity;
+    final private NewsResult mNewsList; // holds ALL the items to be displayed
+    final private MainActivity mainActivity;
 
     public NewsAdapter(NewsResult newsList, MainActivity context) {
         //here we get the initial list
