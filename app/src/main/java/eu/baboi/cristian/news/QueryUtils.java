@@ -87,7 +87,7 @@ public final class QueryUtils {
             connection.setRequestMethod("GET");
             connection.connect();
 
-            if (connection.getResponseCode() == connection.HTTP_OK) {
+            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 // connection successful
                 inputStream = connection.getInputStream();
                 response = readData(inputStream);
@@ -229,7 +229,7 @@ public final class QueryUtils {
             connection.setRequestMethod("GET");
             connection.connect();
 
-            if (connection.getResponseCode() == connection.HTTP_OK) {
+            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
 
                 inputStream = connection.getInputStream();
                 byte[] buffer = new byte[4096];// the transfer buffer

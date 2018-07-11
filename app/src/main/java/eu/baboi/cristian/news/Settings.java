@@ -2,156 +2,145 @@ package eu.baboi.cristian.news;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 
+// Keep a cache of preferences and provide the URL for loading news articles
 public class Settings {
+    private static final String URL = "https://content.guardianapis.com/search";
 
-    // Keys
-    public final String ratingKey;
+    // the parameters
+    public enum Parameter {
+        RATING(R.string.rating, R.string.ratingDefault) {
+            @Override
+            public boolean isEmpty() {
+                return val == null || val.isEmpty() || val.equalsIgnoreCase("0");
+            }
+        },
+        TOPIC(R.string.topic, R.string.topicDefault),
+        OFFICE(R.string.office, R.string.officeDefault),
+        LANG(R.string.lang, R.string.langDefault),
+        FROM(R.string.from, R.string.fromDefault) {
+            @Override
+            public String value() {
+                return apiDate(val);
+            }
+        },
+        TO(R.string.to, R.string.toDefault) {
+            @Override
+            public String value() {
+                return apiDate(val);
+            }
+        },
+        USE_DATE(R.string.useDate, R.string.dateDefault),
+        ORDER_BY(R.string.orderBy, R.string.orderDefault),
+        ORDER_DATE(R.string.orderDate, R.string.dateDefault),
+        PAGE_SIZE(R.string.pageSize, R.string.pageSizeDefault),
+        PASSWORD(R.string.password, R.string.passwordDefault) {
+            @Override
+            public boolean isEmpty() {
+                return true;
+            }
+        };
 
-    //boolean
-    public final String topicKey;
-    public final String officeKey;
-    public final String langKey;
-
-    //range
-    public final String fromKey;
-    public final String toKey;
-    public final String useDateKey;
-
-    //order
-    public final String orderByKey;
-    public final String orderDateKey;
-
-    //other
-    public final String pageSizeKey;
-    public final String passwordKey;
-    public final String key;
-
-    // Defaults
-    public final String ratingDefault;
-
-    //boolean
-    public final String topicDefault;
-    public final String officeDefault;
-    public final String langDefault;
-
-    //range
-    public final String fromDefault;
-    public final String toDefault;
-    public final String dateDefault;
-
-    //order
-    public final String orderDefault;
-
-    //other
-    public final String pageSizeDefault;
-    public final String passwordDefault;
-
-    // State
-    public String rating;
-
-    //boolean
-    public String topic;
-    public String office;
-    public String lang;
-
-    //range
-    public String from;
-    public String to;
-    public String useDate;
-
-    //order
-    public String orderBy;
-    public String orderDate;
-
-    //other
-    public String pageSize;
-    public String password;
+        //the resource IDs
+        public final int keyId;
+        public final int defaultId;
 
 
-    Settings(Context context) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        //Keys
-        ratingKey = context.getString(R.string.rating);
+        public String key;//key name
+        public String val;//key value as stored in the preferences
+        public String def;//default value
 
-        //boolean
-        topicKey = context.getString(R.string.topic);
-        officeKey = context.getString(R.string.office);
-        langKey = context.getString(R.string.lang);
+        Parameter(int key, int def) {
+            this.keyId = key;
+            this.defaultId = def;
+            this.key = null;
+            this.def = null;
+            this.val = null;
+        }
 
-        //range
-        fromKey = context.getString(R.string.from);
-        toKey = context.getString(R.string.to);
-        useDateKey = context.getString(R.string.useDate);
+        public boolean isEmpty() {
+            return val == null || val.isEmpty();
+        }
 
-        //order
-        orderByKey = context.getString(R.string.orderBy);
-        orderDateKey = context.getString(R.string.orderDate);
+        //key value as needed for the Guardian API
+        public String value() {
+            return val;
+        }
 
-        //other
-        pageSizeKey = context.getString(R.string.pageSize);
-        passwordKey = context.getString(R.string.password);
-        key = context.getString(R.string.key);
-
-        //Defaults
-        ratingDefault = context.getString(R.string.ratingDefault);
-
-        //boolean
-        topicDefault = context.getString(R.string.topicDefault);
-        officeDefault = context.getString(R.string.officeDefault);
-        langDefault = context.getString(R.string.langDefault);
-
-        //range
-        fromDefault = context.getString(R.string.fromDefault);
-        toDefault = context.getString(R.string.toDefault);
-        dateDefault = context.getString(R.string.dateDefault);
-
-        //order
-        orderDefault = context.getString(R.string.orderDefault);
-
-        //other
-        pageSizeDefault = context.getString(R.string.pageSizeDefault);
-        passwordDefault = context.getString(R.string.passwordDefault);
-
-        rating = sharedPreferences.getString(ratingKey, ratingDefault);
-
-        //boolean
-        topic = sharedPreferences.getString(topicKey, topicDefault);
-        office = sharedPreferences.getString(officeKey, officeDefault);
-        lang = sharedPreferences.getString(langKey, langDefault);
-
-        //range
-        from = apiDate(sharedPreferences.getString(fromKey, fromDefault));
-        to = apiDate(sharedPreferences.getString(toKey, toDefault));
-        useDate = sharedPreferences.getString(useDateKey, dateDefault);
-
-        //order
-        orderBy = sharedPreferences.getString(orderByKey, orderDefault);
-        orderDate = sharedPreferences.getString(orderDateKey, dateDefault);
-
-        //other
-        pageSize = sharedPreferences.getString(pageSizeKey, pageSizeDefault);
-        password = sharedPreferences.getString(passwordKey, passwordDefault);
+        // convert a French date to a format accepted by the Guardian API
+        private static String apiDate(String date) {
+            if (date == null || date.isEmpty()) return null;
+            DateFormat source = SimpleDateFormat.getDateInstance(DateFormat.SHORT, Locale.FRANCE);
+            SimpleDateFormat target = new SimpleDateFormat("yyyy-MM-dd");
+            Date d;
+            try {
+                d = source.parse(date);
+            } catch (ParseException e) {
+                return null;
+            }
+            return target.format(d);
+        }
     }
 
-    // convert a french date to a format accepted by the Guardian API
-    public static String apiDate(String date) {
-        if (date == null || date.isEmpty()) return "";
-        DateFormat source = SimpleDateFormat.getDateInstance(DateFormat.SHORT, Locale.FRANCE);
-        SimpleDateFormat target = new SimpleDateFormat("yyyy-MM-dd");
-        Date d;
-        try {
-            d = source.parse(date);
-        } catch (ParseException e) {
-            return "";
+    public static String api_key = null;
+
+    private static HashMap<String, Parameter> map = null;// map from key to Parameter
+
+    private Settings() {
+    }
+
+    public static boolean isLoaded() {
+        return map != null;
+    }
+
+    // load the preferences into memory
+    public static void load(Context context) {
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        Parameter parameters[] = Parameter.values();
+
+        map = new HashMap<>(parameters.length);
+        for (Parameter p : parameters) {
+            p.key = context.getString(p.keyId);
+            p.def = context.getString(p.defaultId).trim();
+            p.val = sharedPreferences.getString(p.key, p.def).trim();//trim spaces
+            map.put(p.key, p);
         }
-        return target.format(d);
+
+        String key = context.getString(R.string.key);
+        api_key = Key.getApiKey(Parameter.PASSWORD.val, key);
+    }
+
+    // update the memory copy of a given preference
+    public static void update(SharedPreferences sharedPreferences, String key) {
+        Parameter parameter = map != null ? map.get(key) : null;
+        if (parameter != null)
+            parameter.val = sharedPreferences.getString(key, parameter.def).trim();
+    }
+
+    // make an Uri from preferences given a page
+    public static Uri makeUri(long page) {
+        Uri.Builder builder = Uri.parse(URL).buildUpon();
+
+        builder.appendQueryParameter("api-key", api_key);
+        builder.appendQueryParameter("format", "json");
+        builder.appendQueryParameter("page", String.valueOf(page));
+
+        for (Parameter p : Parameter.values())
+            if (!p.isEmpty()) builder.appendQueryParameter(p.key, p.value());
+
+        //data
+        builder.appendQueryParameter("show-fields", "headline,byline,firstPublicationDate,thumbnail");
+        builder.appendQueryParameter("show-tags", "contributor");
+        return builder.build();
     }
 }

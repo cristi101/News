@@ -3,7 +3,6 @@ package eu.baboi.cristian.news;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -87,11 +86,8 @@ class ButtonViewHolder extends RecyclerView.ViewHolder implements View.OnClickLi
     // jump to page if not 0
     @Override
     public void onClick(View v) {
-        if (page != 0) {
-            Bundle args = new Bundle(1);
-            args.putLong("page", page);
-            mainActivity.getLoaderManager().restartLoader(-1, args, mainActivity);
-        }
+        if (page > 0)
+            mainActivity.getLoaderManager().restartLoader(MainActivity.LOADER_KEY, mainActivity.loaderArgs(page), mainActivity);
     }
 }
 
@@ -122,11 +118,8 @@ class ErrorViewHolder extends RecyclerView.ViewHolder implements View.OnClickLis
     // jump to page if not 0
     @Override
     public void onClick(View v) {
-        if(page!=0) {
-            Bundle args = new Bundle(1);
-            args.putLong("page", page);
-            mainActivity.getLoaderManager().restartLoader(-1, args, mainActivity);
-        }
+        if (page > 0)
+            mainActivity.getLoaderManager().restartLoader(MainActivity.LOADER_KEY, mainActivity.loaderArgs(page), mainActivity);
     }
 }
 

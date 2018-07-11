@@ -19,7 +19,6 @@
     <string name="try_again">Try again!</string>
 
     <string name="settings_title">Settings</string>
-    <string name="title_activity_settings">Settings</string>
 
     <!-- Strings related to Settings -->
     <string name="rating_hint">Enter the rating</string>
@@ -108,7 +107,7 @@
     <string name="passwordTitle">Password</string>
     <string name="password_hint">Enter the password here</string>
     <string name="passwordDefault">****</string>
-    <string name="passwordSummary">Here you can change the password to access the API key</string>
+    <string name="passwordSummary">Change the password for decoding the API key</string>
     <string name="password">password</string>
 
 </resources>

@@ -10,13 +10,11 @@ import android.content.Loader;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,11 +24,10 @@ import android.widget.ProgressBar;
 import java.io.File;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<NewsResult>, SharedPreferences.OnSharedPreferenceChangeListener {
-    private static final String URL = "https://content.guardianapis.com/search";
-    private static final String KEY = "password";
+    public static final int LOADER_KEY = -1;
 
-    private long pageSize;
-    private long page;
+    private static final String PASSWORD_KEY = "password";
+    private static final String PAGE_KEY = "page";
 
     private SharedPreferences sharedPreferences;
     private AlertDialog dialog = null;
@@ -46,8 +43,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         setContentView(R.layout.activity_main);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-        pageSize = Long.valueOf(sharedPreferences.getString(getString(R.string.pageSize), getString(R.string.pageSizeDefault)));
 
         // setup views
         mProgress = findViewById(R.id.progress);
@@ -61,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         prepareLoading();
     }
 
+    // settings menu handling
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
@@ -78,13 +74,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         return super.onOptionsItemSelected(item);
     }
 
+    // ask for password and start loading news articles
     private void prepareLoading(){
-        String password = sharedPreferences.getString(KEY,null);
+        String password = sharedPreferences.getString(PASSWORD_KEY, null);
         if(password == null) showPasswordDialog();
         else loadNews();
     }
 
-    // ask for the password, find the api_key and start loading the data
+    // ask for the password, save the password and start loading the data
     private void showPasswordDialog() {
         View dialogView = getLayoutInflater().inflate(R.layout.password, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -100,7 +97,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     String password = text.getText().toString().trim();
                     dialog.dismiss();
                     dialog = null;
-                    sharedPreferences.edit().putString(KEY, password).apply();
+
+                    //save the password into preferences
+                    sharedPreferences.edit().putString(PASSWORD_KEY, password).apply();
+
                     loadNews();
                 }
             }
@@ -110,10 +110,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         dialog.show();
     }
 
+    // The entry point - first loading of the news article list
     private void loadNews() {
-        Bundle args = new Bundle(1);
-        args.putLong("page",1);
-        getLoaderManager().initLoader(-1, args, this);
+        Settings.load(this); //load the settings
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+        getLoaderManager().initLoader(LOADER_KEY, loaderArgs(1), this);
     }
 
 
@@ -124,29 +125,34 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 
-
-
     // Loader  methods
+
+    // build loader arguments
+    public Bundle loaderArgs(long page) {
+        Bundle args = new Bundle(1);
+        args.putLong(PAGE_KEY, page);
+        return args;
+    }
 
     @Override
     public Loader<NewsResult> onCreateLoader(int id, Bundle args) {
-        //TODO what if args = null
+        if (args == null) throw new IllegalArgumentException("You must provide the page number!");
 
-        // save the page
-        page = args.getLong("page");
+        // retrieve the page number
+        long page = args.getLong(PAGE_KEY);
+        if (page == 0) throw new IllegalArgumentException("You must provide the page number!");
 
         //start loading new data
         mProgress.setVisibility(View.VISIBLE);
         return new NewsLoader(getApplicationContext(), page);
     }
 
-    //TODO scroll to given offset
+
     private void scrollToTop(){
         LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
         linearLayoutManager.scrollToPosition(0);
     }
 
-    //TODO find offset to scroll to
     @Override
     public void onLoadFinished(Loader<NewsResult> loader, NewsResult data) {
         mProgress.setVisibility(View.GONE);
@@ -159,136 +165,85 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         adapter.clear();
     }
 
-    // calculate the new page
-    private static long newPage(long oldPage, long oldPageSize, long pageSize) {
-        long page = (oldPage - 1) * oldPageSize / pageSize + 1;
-        return page;
-    }
-
-    ;
-
-    //TODO compute offset in page to scroll to
+    //called for each preference changed in the settings screen
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        //called for each preference changed in the settings screen
-        if (key.equals(getString(R.string.pageSize))) {
-            //page size changed;
-            long oldPageSize = pageSize;
-            pageSize = Long.valueOf(sharedPreferences.getString(getString(R.string.pageSize), getString(R.string.pageSizeDefault)));
-            page = newPage(page, oldPageSize, pageSize);
-            Bundle args = new Bundle();
-            args.putLong("page", page);
-            getLoaderManager().restartLoader(-1, args, this);
-            return;
-        }
-        //start loading new data
-        mProgress.setVisibility(View.VISIBLE);
+        mProgress.setVisibility(View.VISIBLE);// make progress indicator visible
     }
 
-    //TODO move this to Settings class with singleton pattern
-    // make an Uri from settings variables
-    private static Uri makeUri(long page, Settings settings) {
+    // see https://medium.com/google-developers/making-loading-data-on-android-lifecycle-aware-897e12760832
+    // The AsyncTaskLoader news loader
+    private static class NewsLoader extends AsyncTaskLoader<NewsResult> implements SharedPreferences.OnSharedPreferenceChangeListener {
+        final private File cacheDir; // the folder to load news pictures
 
-        //extract keys
-        String ratingKey = settings.ratingKey;
+        private long mPage; // the page to display
+        private String mUrl; // the url of the page to display
 
-        //boolean
-        String topicKey = settings.topicKey;
-        String officeKey = settings.officeKey;
-        String langKey = settings.langKey;
-
-        //range
-        String fromKey = settings.fromKey;
-        String toKey = settings.toKey;
-        String useDateKey = settings.useDateKey;
-
-        //order
-        String orderByKey = settings.orderByKey;
-        String orderDateKey = settings.orderDateKey;
-
-        //other
-        String pageSizeKey = settings.pageSizeKey;
-
-        //extract settings
-        String rating = settings.rating;
-
-        //boolean
-        String topic = settings.topic;
-        String office = settings.office;
-        String lang = settings.lang;
-
-        //range
-        String from = settings.from;
-        String to = settings.to;
-        String useDate = settings.useDate;
-
-        //order
-        String orderBy = settings.orderBy;
-        String orderDate = settings.orderDate;
-
-        //other
-        String pageSize = settings.pageSize;
-        String password = settings.password;
-
-        String api_key = Key.getApiKey(password, settings.key);
-
-        Uri.Builder builder = Uri.parse(URL).buildUpon();
-        builder.appendQueryParameter("api-key", api_key);
-        builder.appendQueryParameter("format", "json");
-        builder.appendQueryParameter("page", String.valueOf(page));
-
-        if (!rating.isEmpty() && !rating.equalsIgnoreCase("0"))//not empty or 0
-            builder.appendQueryParameter(ratingKey, rating);
-
-        //boolean
-        if (!topic.isEmpty()) builder.appendQueryParameter(topicKey, topic);
-        if (!office.isEmpty()) builder.appendQueryParameter(officeKey, office);
-        if (!lang.isEmpty()) builder.appendQueryParameter(langKey, lang);
-
-        //range
-        if (!from.isEmpty()) builder.appendQueryParameter(fromKey, from);
-        if (!to.isEmpty()) builder.appendQueryParameter(toKey, to);
-        builder.appendQueryParameter(useDateKey, useDate);
-
-        //order
-        builder.appendQueryParameter(orderByKey, orderBy);
-        builder.appendQueryParameter(orderDateKey, orderDate);
-
-        //other
-        builder.appendQueryParameter(pageSizeKey, pageSize);
-
-        //data
-        builder.appendQueryParameter("show-fields", "headline,byline,firstPublicationDate,thumbnail");
-        builder.appendQueryParameter("show-tags", "contributor");
-        return builder.build();
-    }
-
-    private static class NewsLoader extends AsyncTaskLoader<NewsResult> {
-        final private File cacheDir;
-
-        private long mPage;
-        private String mUrl;
+        private NewsResult mData = null;
+        private boolean hasCallback = false;
 
         NewsLoader(Context context, long page) {
             super(context);
-            cacheDir = context.getCacheDir();
+            cacheDir = context.getDir("cachedPictures", 0);
             mPage = page;
         }
 
         @Override
-        protected void onStartLoading() {
-            Settings settings = new Settings(getContext());
-            mUrl = makeUri(mPage, settings).toString();
-            Log.e("URL", mUrl);
-            forceLoad();
+        protected void onStartLoading() {//called only on new loader or new activity
+
+            if (mData != null) {// already have data
+                if (takeContentChanged()) mData = null;
+                else deliverResult(mData); // use cached data
+            }
+
+            if (!hasCallback) { // register for preference changes
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+                sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+                hasCallback = true;
+            }
+
+            if (mData == null) {
+                mUrl = Settings.makeUri(mPage).toString();//build URL from cached preferences
+                forceLoad();
+            }
         }
 
+
+        @Override
+        public void deliverResult(NewsResult data) {
+            mData = data; // save the data for later
+            super.deliverResult(data);
+        }
+
+        protected void onReset() {
+            if (hasCallback) {
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+                sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
+                hasCallback = false;
+            }
+        }
+
+        // perform data loading on background thread - must have mPage, mUrl and cacheDir set!
         @Override
         public NewsResult loadInBackground() {
             if (mUrl == null || mUrl.trim().length() == 0) return NewsResult.newResult();
+
             NewsResult result = QueryUtils.getNews(cacheDir, mUrl);
             if(result.code==NewsResult.ERROR) result.page = mPage; //save the page if error
+
             return result;
+        }
+
+        // watch for changes in preferences and trigger loading of new data
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+            Settings.update(sharedPreferences, key);//update the cached values
+
+            mPage = 1;//restart on page one
+            mUrl = Settings.makeUri(mPage).toString();//build new URL from cached preferences
+
+            // trigger loading of new data
+            onContentChanged();
         }
     }
 }

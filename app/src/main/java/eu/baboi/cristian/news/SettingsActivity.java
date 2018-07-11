@@ -1,6 +1,7 @@
 package eu.baboi.cristian.news;
 
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -15,12 +16,19 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-//TODO make style schanges for old android version
+//TODO make style changes for old android version
 public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings);
+    }
+
+    @Override
+    public void onBackPressed() {
+        //needed to restore full sensor orientation change for the main activity
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
+        super.onBackPressed();
     }
 
     // the settings fragment
@@ -89,6 +97,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
+            //newValue cannot be null
             String stringValue = newValue.toString().trim();
             if (preference == password) return true;
             if (preference == rating) {//can be empty, 0, sau 1 - 5
@@ -113,10 +122,10 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             }
             if (preference == from || preference == to) {// can be empty or a valid date
-                DateFormat source = SimpleDateFormat.getDateInstance(DateFormat.SHORT, Locale.FRANCE);
-                DateFormat target = SimpleDateFormat.getDateInstance(DateFormat.FULL);
-                Date date;
                 if (!stringValue.isEmpty()) {
+                    DateFormat source = SimpleDateFormat.getDateInstance(DateFormat.SHORT, Locale.FRANCE);
+                    DateFormat target = SimpleDateFormat.getDateInstance(DateFormat.FULL);
+                    Date date;
                     try {
                         date = source.parse(stringValue);
                     } catch (ParseException e) {
