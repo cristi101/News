@@ -6,6 +6,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
     </style>
 
     <style name="section" parent="AppTheme">
@@ -43,19 +44,20 @@
         <item name="android:paddingRight">@dimen/margin</item>
     </style>
 
-    <style name="dialog" parent="Theme.AppCompat.Dialog.Alert">
+
+    <style name="dialog" parent="@style/ThemeOverlay.AppCompat.Dialog.Alert">
         <item name="android:windowBackground">@color/item_bkgd</item>
-        <item name="colorAccent">@color/settings_accent</item>
-        <item name="android:textColor">@color/text</item>
     </style>
+
 
     <style name="settings" parent="AppTheme">
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
         <item name="android:windowBackground">@color/item_bkgd</item>
-        <item name="colorAccent">@color/settings_accent</item>
-        <item name="android:textColor">@color/text</item>
-        <item name="android:textColorHighlight">@color/selection</item>
-        <item name="android:alertDialogTheme">@style/dialog</item>
+        <item name="android:textColor">@color/section</item>
+        <item name="android:textColorHighlight">@color/section_bkgd</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/textSize</item>
+        <item name="alertDialogTheme">@style/dialog</item>
+        <item name="colorAccent">@color/section_bkgd</item>
     </style>
-
-
 </resources>
