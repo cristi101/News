@@ -131,6 +131,8 @@ public class Settings {
     public static Uri makeUri(long page) {
         Uri.Builder builder = Uri.parse(URL).buildUpon();
 
+        if (api_key == null) api_key = "test";
+
         builder.appendQueryParameter("api-key", api_key);
         builder.appendQueryParameter("format", "json");
         builder.appendQueryParameter("page", String.valueOf(page));

@@ -107,7 +107,7 @@
     <string name="passwordTitle">Password</string>
     <string name="password_hint">Enter the password here</string>
     <string name="passwordDefault">****</string>
-    <string name="passwordSummary">Change the password for decoding the API key</string>
+    <string name="passwordSummary">for decoding the API key</string>
     <string name="password">password</string>
 
 </resources>

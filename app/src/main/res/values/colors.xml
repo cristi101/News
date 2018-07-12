@@ -16,4 +16,6 @@
     <color name="settings_accent">@color/section_bkgd</color>
     <color name="selection">@android:color/holo_blue_bright</color>
     <color name="text">@android:color/white</color>
+
+    <color name="preference_fallback_accent_color">@color/section_bkgd</color>
 </resources>
